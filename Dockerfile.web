@@ -1,0 +1,13 @@
+FROM golang:1.14.2-alpine as builder
+
+RUN mkdir /go/src/node-connection-checker
+ADD . /go/src/node-connection-checker
+WORKDIR /go/src/node-connection-checker/
+RUN CGO_ENABLED=0 GOOS=linux go build -o build/web node-connection-checker/cmd/web
+
+FROM alpine:3.11.5
+RUN adduser -S -D -H -h /app appuser
+USER appuser
+COPY --from=builder /go/src/node-connection-checker/build/web /app/
+WORKDIR /app
+CMD ["./web"]

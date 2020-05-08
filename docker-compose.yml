@@ -1,0 +1,31 @@
+version: "3.7"
+
+services:
+  graphite:
+    image: graphiteapp/graphite-statsd
+    ports:
+      - "7080:80"
+
+  scheduler:
+    build:
+      context: .
+      dockerfile: Dockerfile.scheduler
+    environment:
+      - STATSD_ADDR=graphite:8125
+      - METRIC_PREFIX=production
+      - METRIC_SOURCE=server
+      - SENTRY_DSN=https://123:abc@sentry.example.com:443/1
+
+  web-1:
+    build:
+      context: .
+      dockerfile: Dockerfile.web
+    environment:
+      - GIN_MODE=release
+
+  web-2:
+    build:
+      context: .
+      dockerfile: Dockerfile.web
+    environment:
+      - GIN_MODE=release

@@ -1,0 +1,16 @@
+[Unit]
+Description=Node connection checker scheduler
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+ExecStart=/opt/node-checker/bin/scheduler -config=/opt/node-checker/conf/scheduler.yml
+User=node-checker
+Group=node-checker
+Restart=always
+TimeoutStopSec=30s
+LimitMEMLOCK=infinity
+LimitNOFILE=4096
+
+[Install]
+WantedBy=multi-user.target

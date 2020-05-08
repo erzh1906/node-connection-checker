@@ -1,0 +1,6 @@
+check_interval: 5
+check_timeout_ms: 1500
+targets:
+  - web-1
+  - web-2
+  - web-3

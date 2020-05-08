@@ -1,0 +1,14 @@
+FROM golang:1.14.2-alpine as builder
+
+RUN mkdir /go/src/node-connection-checker
+ADD . /go/src/node-connection-checker
+WORKDIR /go/src/node-connection-checker/
+RUN CGO_ENABLED=0 GOOS=linux go build -o build/scheduler node-connection-checker/cmd/scheduler
+
+FROM alpine:3.11.5
+RUN adduser -S -D -H -h /app appuser
+USER appuser
+COPY --from=builder /go/src/node-connection-checker/build/scheduler /app/
+COPY --from=builder /go/src/node-connection-checker/pkg/scheduler/scheduler.yml /app/
+WORKDIR /app
+CMD ["./scheduler", "-config=scheduler.yml"]
